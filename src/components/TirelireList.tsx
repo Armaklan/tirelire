@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
-import { Plus, Wallet, Trash2 } from 'lucide-react';
+import { Plus, Wallet, Trash2, Copy, Check } from 'lucide-react';
 import { triggerAutoSave } from '../services/autoSaveService';
 
 interface TirelireListProps {
@@ -13,6 +13,18 @@ export const TirelireList: React.FC<TirelireListProps> = ({ onSelectTirelire }) 
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newPocketMoney, setNewPocketMoney] = useState(0);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (!tirelires) return;
+    const text = tirelires
+      .map(t => `${t.name}: ${t.balance.toFixed(2)}€`)
+      .join('\n');
+    
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const addTirelire = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,13 +74,27 @@ export const TirelireList: React.FC<TirelireListProps> = ({ onSelectTirelire }) 
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Mes Tirelires</h2>
-        <button
-          onClick={handlePocketMoney}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
-        >
-          <Wallet size={18} />
-          Argent de poche
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleCopy}
+            title="Copier la liste"
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all text-sm ${
+              copied 
+                ? 'bg-green-600 text-white' 
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+            }`}
+          >
+            {copied ? <Check size={18} /> : <Copy size={18} />}
+            {copied ? 'Copié !' : 'Copier'}
+          </button>
+          <button
+            onClick={handlePocketMoney}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+          >
+            <Wallet size={18} />
+            Argent de poche
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-4">

@@ -22,7 +22,7 @@ export default defineConfig({
             type: 'image/svg+xml'
           },
           {
-            src: 'pwa-192x192.svg',
+            src: 'pwa-512x512.svg',
             sizes: '512x512',
             type: 'image/svg+xml'
           }

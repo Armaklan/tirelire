@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
-import { ArrowLeft, PlusCircle, MinusCircle, History } from 'lucide-react';
+import { ArrowLeft, PlusCircle, MinusCircle, History, Edit2, Check, X, Coins } from 'lucide-react';
 import { triggerAutoSave } from '../services/autoSaveService';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -26,8 +26,22 @@ export const TirelireDetail: React.FC<TirelireDetailProps> = ({ tirelireId, onBa
   const [amount, setAmount] = useState(0);
   const [opName, setOpName] = useState('');
   const [type, setType] = useState<'deposit' | 'withdrawal'>('deposit');
+  
+  const [isEditingPocketMoney, setIsEditingPocketMoney] = useState(false);
+  const [editedPocketMoney, setEditedPocketMoney] = useState(0);
 
   if (!tirelire) return <div>Chargement...</div>;
+
+  const handleUpdatePocketMoney = async () => {
+    await db.tirelires.update(tirelireId, { pocketMoney: editedPocketMoney });
+    setIsEditingPocketMoney(false);
+    triggerAutoSave();
+  };
+
+  const startEditing = () => {
+    setEditedPocketMoney(tirelire.pocketMoney);
+    setIsEditingPocketMoney(true);
+  };
 
   const handleOperation = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,10 +77,47 @@ export const TirelireDetail: React.FC<TirelireDetailProps> = ({ tirelireId, onBa
         Retour
       </button>
 
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-lg">
-        <h2 className="text-xl opacity-90">{tirelire.name}</h2>
-        <p className="text-4xl font-bold mt-2">{tirelire.balance.toFixed(2)}€</p>
-        <p className="text-sm opacity-75 mt-4">Solde actuel</p>
+      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-lg relative overflow-hidden">
+        <div className="relative z-10">
+          <h2 className="text-xl opacity-90">{tirelire.name}</h2>
+          <p className="text-4xl font-bold mt-2">{tirelire.balance.toFixed(2)}€</p>
+          <div className="flex justify-between items-end mt-4">
+            <p className="text-sm opacity-75">Solde actuel</p>
+            
+            <div className="text-right">
+              {isEditingPocketMoney ? (
+                <div className="flex items-center gap-2 bg-white/20 p-1 rounded-lg">
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="w-20 bg-transparent border-none text-white font-bold focus:ring-0 p-0 text-right"
+                    value={editedPocketMoney || ''}
+                    onChange={(e) => setEditedPocketMoney(parseFloat(e.target.value) || 0)}
+                    autoFocus
+                  />
+                  <button onClick={handleUpdatePocketMoney} className="hover:text-green-300" title="Valider">
+                    <Check size={18} />
+                  </button>
+                  <button onClick={() => setIsEditingPocketMoney(false)} className="hover:text-red-300" title="Annuler">
+                    <X size={18} />
+                  </button>
+                </div>
+              ) : (
+                <div 
+                  className="flex items-center gap-2 group cursor-pointer hover:bg-white/10 px-2 py-1 -mr-2 rounded-lg transition-colors" 
+                  onClick={startEditing}
+                  title="Modifier l'argent de poche"
+                >
+                  <p className="text-sm">
+                    Argent de poche: <span className="font-bold">{tirelire.pocketMoney.toFixed(2)}€</span>
+                  </p>
+                  <Edit2 size={14} className="opacity-50 group-hover:opacity-100 transition-opacity" />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <Coins className="absolute -right-4 -bottom-4 w-32 h-32 opacity-10 rotate-12" />
       </div>
 
       <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">

@@ -128,7 +128,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
 
         <section className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
           <h3 className="font-semibold mb-3 flex items-center gap-2">
-            <Save size={18} /> Auto-save
+            <Save size={18} /> Auto-save (Backup)
           </h3>
           {!isSupported ? (
             <p className="text-sm text-amber-600 flex items-center gap-1">
@@ -148,7 +148,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
                           onClick={handleRequestPermission}
                           className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded flex items-center gap-1 hover:bg-amber-200 transition-colors"
                         >
-                          <AlertCircle size={12} /> Autoriser
+                          <AlertCircle size={12} /> Autoriser l'écriture
                         </button>
                       )}
                     </div>
@@ -165,11 +165,11 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
                   onClick={handleSelectAutoSave}
                   className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-gray-300 dark:border-gray-600 p-3 rounded-lg text-gray-500 hover:border-blue-500 hover:text-blue-500 transition-all"
                 >
-                  <Plus size={18} /> Définir un fichier d'auto-save
+                  <Plus size={18} /> Définir un fichier de backup automatique
                 </button>
               )}
-              <p className="text-xs text-gray-500">
-                Si activé, les données seront sauvegardées dans ce fichier après chaque opération.
+              <p className="text-xs text-gray-500 italic">
+                Note : Les données sont lues depuis la base locale du navigateur. Ce fichier sert uniquement de backup automatique après chaque opération. Pour restaurer des données, utilisez le bouton d'importation ci-dessus.
               </p>
             </div>
           )}

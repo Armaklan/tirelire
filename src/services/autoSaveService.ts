@@ -33,11 +33,10 @@ export async function triggerAutoSave() {
   if (!handle) return;
 
   try {
-    // We try to verify permission without requesting it (because this might be called non-interactively)
-    // But actually triggerAutoSave is called after a button click (deposit/pocket money)
-    // @ts-ignore
-    if ((await handle.queryPermission({ mode: 'readwrite' })) !== 'granted') {
-        console.warn('Auto-save skipped: Permission required');
+    // We try to verify permission and request it if necessary
+    // This works because triggerAutoSave is called from user gestures
+    if (!(await verifyPermission(handle, true))) {
+        console.warn('Auto-save skipped: Permission not granted');
         return;
     }
 

@@ -48,7 +48,7 @@ export const TirelireDetail: React.FC<TirelireDetailProps> = ({ tirelireId, onBa
       });
     });
 
-    await triggerAutoSave();
+    triggerAutoSave();
     setAmount(0);
     setOpName('');
   };

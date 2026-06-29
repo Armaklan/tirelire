@@ -22,7 +22,7 @@ export const TirelireList: React.FC<TirelireListProps> = ({ onSelectTirelire }) 
       pocketMoney: newPocketMoney,
       balance: 0
     });
-    await triggerAutoSave();
+    triggerAutoSave();
     setNewName('');
     setNewPocketMoney(0);
     setShowAddForm(false);
@@ -46,7 +46,7 @@ export const TirelireList: React.FC<TirelireListProps> = ({ onSelectTirelire }) 
         });
       }
     }
-    await triggerAutoSave();
+    triggerAutoSave();
   };
 
   const deleteTirelire = async (id: number, e: React.MouseEvent) => {
@@ -54,7 +54,7 @@ export const TirelireList: React.FC<TirelireListProps> = ({ onSelectTirelire }) 
     if (confirm('Voulez-vous vraiment supprimer cette tirelire ?')) {
       await db.tirelires.delete(id);
       await db.operations.where('tirelireId').equals(id).delete();
-      await triggerAutoSave();
+      triggerAutoSave();
     }
   };
 
